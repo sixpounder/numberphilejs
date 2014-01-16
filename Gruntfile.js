@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     coffee: {
       compile: {
         files: {
-          'dist/numberphile.js': ['src/numberphile.reactor.coffee', 'src/numberphile.counter.coffee', 'src/numberphile.coffee']
+          'dist/numberphile.js': ['src/numberphile.reactor.coffee', 'src/numberphile.engine.coffee', 'src/numberphile.counter.coffee', 'src/numberphile.coffee']
         },
         options: {
           join: true

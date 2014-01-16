@@ -151,5 +151,5 @@ class @NumberphileReactor
     parseFloat(s.toFixed(@settings.importMaxDecimalDigits))
 
 # NodeJS exports if node env and exports defined (see node modules)
-if module?
-  module.exports = @NumberphileReactor
+if exports?
+  exports.NumberphileReactor = @NumberphileReactor

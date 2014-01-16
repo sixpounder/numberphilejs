@@ -1,7 +1,14 @@
 // Created by Andrea Coronese
 
 var assert = require('assert');
-var N = require('../dist/numberphile.js');
+var N = require('../dist/numberphile.js').NumberphileReactor;
+var E = require('../dist/numberphile.js').Numberphiler;
+
+describe('Numberphiler (BASE)', function() {
+    it("symbol Numberphiler should be defined (whatch your exports!)", function() {
+        assert.notEqual("undefined", typeof E);
+    });
+});
 
 describe('NumberphileReactor (BASE)', function() {
     it("symbol NumberphileReactor should be defined (whatch your exports!)", function() {
