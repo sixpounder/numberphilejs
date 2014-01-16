@@ -1,4 +1,6 @@
-# A jQuery plugin to bind elements to triggers for step values
+###
+A jQuery plugin to bind elements to triggers for step values
+###
 class @NumberphileCounter
   # Default options
   # @private
@@ -15,7 +17,7 @@ class @NumberphileCounter
   constructor: (@element, options) ->
     @settings = $.extend @defaults, options
     @settings.step = parseInt(@settings.step, 10)
-    @initialize()
+    return @initialize()
 
   # Initializes the element based on passed options.
   # @private
@@ -27,20 +29,30 @@ class @NumberphileCounter
         @settings.target = @element
 
     if @settings.autowire
-      @element.on 'click', () ->
+      @element.bind 'click', () ->
         $(this).numberphileCounter('step')
+
+    return @
   
-  # Increments the value/text of the receiver by settings.step
+  # Increments the value/text of the receiver by settings.step (can be negative).
+  # This is automatically binded to matched elements click event
+  # by default (see autowire property)
+  # @example Manual plugin method call
+  #   $('button').numberphileCounter('step')
   step: ->
-    stepVal = @settings.step
-    $(@settings.target).each () ->
+    stepVal = @element.attr('data-step')
+    targets = $(@element.attr('data-target'))
+    targets.each () ->
       $this = $(this)
-      s = NumberphileReactor.get().sum([parseInt($this.val(), 10), stepVal])
+      base = parseFloat($this.val())
+      s = parseFloat(stepVal)
+      s = s + base
       if $this.is('input')
         $(this).val(s)
       else
         $this.text(s)
 
+      $this.trigger('numberphile:step')
 
 if window? && $?
   (($, window) ->
@@ -56,7 +68,7 @@ if window? && $?
   ) window.jQuery, window
 
   !(($) ->
-    $(window).on 'load', () ->
+    $(window).bind 'load', () ->
       $('[role="counter-trigger"]').each () ->
         $this = $(this)
         try

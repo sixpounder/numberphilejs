@@ -28,7 +28,7 @@ class @NumberphileReactor
   regexps:
     thousandsMatch: /\B(?=(\d{3})+(?!\d))/g
     importTypableCharacter: /[0-9,\.]/g
-    importNonTypableCharacters: /[^A-Za-z\d,]/g
+    importNonValidCharacters: /[^A-Za-z\d,]/g
 
   # Default options when not specified
   defaults:
@@ -62,7 +62,7 @@ class @NumberphileReactor
   # @param {String} repr representation of the number as a String
   # @return {Float} a float with settings.importMaxDecimalDigits precision
   stringToFloat: (repr)->
-    return parseFloat(repr.toString().replace(@regexps.importNonTypableCharacters, "").replace(@settings.importDecimalSeparator, @settings.importThoudandsSeparator))
+    return parseFloat(repr.toString().replace(@regexps.importNonValidCharacters, "").replace(@settings.importDecimalSeparator, @settings.importThoudandsSeparator))
 
   # Converts a number into a string with settings.importMaxDecimalDigits decimals
   # and settings.importThoudandsSeparator each thousand digit
@@ -112,10 +112,15 @@ class @NumberphileReactor
     else
       return repr
 
+  # Sums an array of stuff and gives back the result. This method tries
+  # to automatically infer the items types to return the proper result
+  # @example Sum an array of various types
+  #   NumberphileReactor.get().add([32, 32.3, "1"])
   add: (values = []) ->
-    # TODO: regexp to infer floats, integers, import formats etc...
     s = 0
     for v in values
+      if typeof v is "string"
+        v = @stringToFloat(v)
       s += v
     s
 

@@ -39,7 +39,7 @@
     NumberphileReactor.prototype.regexps = {
       thousandsMatch: /\B(?=(\d{3})+(?!\d))/g,
       importTypableCharacter: /[0-9,\.]/g,
-      importNonTypableCharacters: /[^A-Za-z\d,]/g
+      importNonValidCharacters: /[^A-Za-z\d,]/g
     };
 
     NumberphileReactor.prototype.defaults = {
@@ -74,7 +74,7 @@
     };
 
     NumberphileReactor.prototype.stringToFloat = function(repr) {
-      return parseFloat(repr.toString().replace(this.regexps.importNonTypableCharacters, "").replace(this.settings.importDecimalSeparator, this.settings.importThoudandsSeparator));
+      return parseFloat(repr.toString().replace(this.regexps.importNonValidCharacters, "").replace(this.settings.importDecimalSeparator, this.settings.importThoudandsSeparator));
     };
 
     NumberphileReactor.prototype.numberToFormattedImport = function(number) {
@@ -125,6 +125,9 @@
       s = 0;
       for (_i = 0, _len = values.length; _i < _len; _i++) {
         v = values[_i];
+        if (typeof v === "string") {
+          v = this.stringToFloat(v);
+        }
         s += v;
       }
       return s;
@@ -166,6 +169,11 @@
     module.exports = this.NumberphileReactor;
   }
 
+  /*
+  A jQuery plugin to bind elements to triggers for step values
+  */
+
+
   this.NumberphileCounter = (function() {
     NumberphileCounter.prototype.defaults = {
       debug: false,
@@ -178,7 +186,7 @@
       this.element = element;
       this.settings = $.extend(this.defaults, options);
       this.settings.step = parseInt(this.settings.step, 10);
-      this.initialize();
+      return this.initialize();
     }
 
     NumberphileCounter.prototype.initialize = function() {
@@ -190,24 +198,29 @@
         }
       }
       if (this.settings.autowire) {
-        return this.element.on('click', function() {
+        this.element.bind('click', function() {
           return $(this).numberphileCounter('step');
         });
       }
+      return this;
     };
 
     NumberphileCounter.prototype.step = function() {
-      var stepVal;
-      stepVal = this.settings.step;
-      return $(this.settings.target).each(function() {
-        var $this, s;
+      var stepVal, targets;
+      stepVal = this.element.attr('data-step');
+      targets = $(this.element.attr('data-target'));
+      return targets.each(function() {
+        var $this, base, s;
         $this = $(this);
-        s = NumberphileReactor.get().sum([parseInt($this.val(), 10), stepVal]);
+        base = parseFloat($this.val());
+        s = parseFloat(stepVal);
+        s = s + base;
         if ($this.is('input')) {
-          return $(this).val(s);
+          $(this).val(s);
         } else {
-          return $this.text(s);
+          $this.text(s);
         }
+        return $this.trigger('numberphile:step');
       });
     };
 
@@ -236,7 +249,7 @@
       });
     })(window.jQuery, window);
     !(function($) {
-      return $(window).on('load', function() {
+      return $(window).bind('load', function() {
         return $('[role="counter-trigger"]').each(function() {
           var $this, data, e;
           $this = $(this);
@@ -292,14 +305,15 @@
       this.element = element;
       this.settings = $.extend(this.defaults, options);
       this.initialize();
+      return this;
     }
 
     Numberphile.prototype.initialize = function() {
       if (this.settings.autowire) {
         if (this.element.attr('data-format') === 'import') {
-          return this.element.on('blur', function() {
+          return this.element.bind('blur', function() {
             return $(this).numberphile('formatImportToHumanReadableFormat');
-          }).on('focusin', function() {
+          }).bind('focusin', function() {
             return $(this).numberphile('editModeForImport');
           }).keydown(function(event) {
             if (!eventKeyCodeFitsImport(event)) {
@@ -392,7 +406,7 @@
 
   if ((typeof window !== "undefined" && window !== null) && (typeof $ !== "undefined" && $ !== null)) {
     !(function($) {
-      return $(window).on('load', function() {
+      return $(window).bind('load', function() {
         return $('[data-numberphile="auto"]').numberphile();
       });
     })(window.jQuery);

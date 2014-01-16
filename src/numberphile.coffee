@@ -37,15 +37,17 @@ class @Numberphile
     @settings = $.extend @defaults, options
     @initialize()
 
+    return @
+
   # Initializes the element based on passed options.
   # @private
   initialize: ->
     if @settings.autowire
 
       if @element.attr('data-format') is 'import'
-        @element.on 'blur', () ->
+        @element.bind 'blur', () ->
           $(this).numberphile('formatImportToHumanReadableFormat')
-        .on 'focusin', () ->
+        .bind 'focusin', () ->
           $(this).numberphile('editModeForImport')
         .keydown (event) ->
           if !eventKeyCodeFitsImport(event)
@@ -142,6 +144,6 @@ if $? && window?
 
 if window? && $?
   !(($) ->
-    $(window).on 'load', ()->
+    $(window).bind 'load', ()->
       $('[data-numberphile="auto"]').numberphile()
   ) window.jQuery
