@@ -1,7 +1,7 @@
 // Created by Andrea Coronese
 
 var assert = require('assert');
-var N = require('../dist/numberphile.min.js');
+var N = require('../dist/numberphile.js');
 
 describe('NumberphileReactor (BASE)', function() {
     it("symbol NumberphileReactor should be defined (whatch your exports!)", function() {

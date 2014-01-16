@@ -30,7 +30,7 @@
 
     NumberphileReactor.get = function() {
       if (this.instance == null) {
-        instance = new this;
+        instance = new this();
         instance.init("NumberphileReactor");
       }
       return instance;
@@ -62,8 +62,9 @@
 
     NumberphileReactor.prototype.setup = function(options) {
       if (options != null) {
-        return this.settings = _.extend(this.defaults, options);
+        this.settings = _.extend(this.defaults, options);
       }
+      return this.settings;
     };
 
     NumberphileReactor.prototype.log = function(m) {
@@ -116,6 +117,19 @@
       }
     };
 
+    NumberphileReactor.prototype.add = function(values) {
+      var s, v, _i, _len;
+      if (values == null) {
+        values = [];
+      }
+      s = 0;
+      for (_i = 0, _len = values.length; _i < _len; _i++) {
+        v = values[_i];
+        s += v;
+      }
+      return s;
+    };
+
     NumberphileReactor.prototype.sum = function(reprs) {
       if (reprs != null) {
         if (Object.prototype.toString.call(reprs) === '[object Array]') {
@@ -150,6 +164,97 @@
 
   if (typeof module !== "undefined" && module !== null) {
     module.exports = this.NumberphileReactor;
+  }
+
+  this.NumberphileCounter = (function() {
+    NumberphileCounter.prototype.defaults = {
+      debug: false,
+      autowire: true,
+      step: 1,
+      target: null
+    };
+
+    function NumberphileCounter(element, options) {
+      this.element = element;
+      this.settings = $.extend(this.defaults, options);
+      this.settings.step = parseInt(this.settings.step, 10);
+      this.initialize();
+    }
+
+    NumberphileCounter.prototype.initialize = function() {
+      if (this.settings.target == null) {
+        if ((this.element.attr('data-target') != null) && this.element.attr('data-target') !== "") {
+          this.settings.target = $(this.element.attr('data-target'));
+        } else {
+          this.settings.target = this.element;
+        }
+      }
+      if (this.settings.autowire) {
+        return this.element.on('click', function() {
+          return $(this).numberphileCounter('step');
+        });
+      }
+    };
+
+    NumberphileCounter.prototype.step = function() {
+      var stepVal;
+      stepVal = this.settings.step;
+      return $(this.settings.target).each(function() {
+        var $this, s;
+        $this = $(this);
+        s = NumberphileReactor.get().sum([parseInt($this.val(), 10), stepVal]);
+        if ($this.is('input')) {
+          return $(this).val(s);
+        } else {
+          return $this.text(s);
+        }
+      });
+    };
+
+    return NumberphileCounter;
+
+  })();
+
+  if ((typeof window !== "undefined" && window !== null) && (typeof $ !== "undefined" && $ !== null)) {
+    (function($, window) {
+      return $.fn.extend({
+        numberphileCounter: function() {
+          var args, options;
+          options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          return this.each(function() {
+            var $this, data;
+            $this = $(this);
+            data = $this.data('numberphileCounter-class');
+            if (!data) {
+              $this.data('numberphileCounter-class', (data = new NumberphileCounter($this, options)));
+            }
+            if (typeof options === 'string') {
+              return data[options].apply(data, args);
+            }
+          });
+        }
+      });
+    })(window.jQuery, window);
+    !(function($) {
+      return $(window).on('load', function() {
+        return $('[role="counter-trigger"]').each(function() {
+          var $this, data, e;
+          $this = $(this);
+          try {
+            data = $this.data();
+            if (data != null) {
+              return $this.numberphileCounter(data);
+            }
+          } catch (_error) {
+            e = _error;
+            return $this.numberphileCounter({
+              step: $this.attr('data-step') || 1,
+              target: $this.attr('data-target') || ''
+            });
+          }
+        });
+      });
+    })(window.jQuery);
   }
 
   /*

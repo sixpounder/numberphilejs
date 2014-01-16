@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     coffee: {
       compile: {
         files: {
-          'dist/numberphile.js': ['src/numberphile.reactor.coffee', 'src/numberphile.coffee']
+          'dist/numberphile.js': ['src/numberphile.reactor.coffee', 'src/numberphile.counter.coffee', 'src/numberphile.coffee']
         },
         options: {
           join: true
@@ -22,10 +22,24 @@ module.exports = function(grunt) {
       }
     },
     coffeelint: {
-      all: ['src/numberphile.reactor.coffee','src/numberphile.coffee'],
+      all: ['src/*.coffee'],
       options: {
         'max_line_length': {
           'level': 'ignore'
+        }
+      }
+    },
+    jshint: {
+      dist: {
+        options: {
+          '-W041': true,
+          '-W030': true,
+          globals: {
+            jQuery: true
+          }
+        },
+        files: {
+          src: ['dist/numberphile.js']
         }
       }
     },
@@ -57,13 +71,14 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-coffeelint');
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-simple-mocha');
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task(s).
-  var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'simplemocha', 'compress'];
+  var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint', 'simplemocha', 'compress'];
   var devTasks = ['clean', 'coffeelint', 'coffee', 'simplemocha'];
 
   grunt.registerTask('default', distTasks);

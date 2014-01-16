@@ -20,7 +20,7 @@ class @NumberphileReactor
   # @return [NumberphileReactor] the singleton instance for the NumberphileReactor
   @get: ->
     if not @instance?
-      instance = new @
+      instance = new @()
       instance.init("NumberphileReactor")
     instance
 
@@ -49,6 +49,7 @@ class @NumberphileReactor
   # @param {Object} options options to set
   setup: (options)->
     @settings = _.extend(@defaults, options) if options?
+    @settings
 
   # Utility log method
   # @private
@@ -110,6 +111,13 @@ class @NumberphileReactor
       
     else
       return repr
+
+  add: (values = []) ->
+    # TODO: regexp to infer floats, integers, import formats etc...
+    s = 0
+    for v in values
+      s += v
+    s
 
   # Sums an array of numbers or string representation of numbers
   # mantaining a precision of settings.importMaxDecimalDigits
