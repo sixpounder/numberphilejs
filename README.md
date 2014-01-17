@@ -49,3 +49,29 @@ For node environment you will find Numberphiler class and N wrapper function in 
 var Numberphiler = require('numberphilejs').Numberphiler
 var N = require('numberphilejs').N
 ```
+
+## jQuery plugin
+To easily integrate the library in your DOM we ship an integrated jQuery plugin. The plugin will be triggered for every item having data-numberphile="auto" attribute.
+
+```html
+<input data-numberphile="auto" data-format="import" value="123"/>
+```
+
+This approach will use data attributes to configure the plugin
+
+```html
+<input data-numberphile="auto" data-importMaxDecimalDigits="2" data-format="import" value="123"/>
+```
+
+You can still call it yourself
+
+```javascript
+$('input.import').numerphile({
+    autowire: true, // Automatic binding for DOM events
+    importMaxDecimalDigits: 2,
+    importDecimalSeparator: ','
+    importThoudandsSeparator: '.'
+});
+```
+
+## jQuery utilities
