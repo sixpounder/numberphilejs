@@ -23,6 +23,7 @@ class @Numberphile
   defaults:
     debug: false
     autowire: true
+    autofocus: false
     importMaxDecimalDigits: 2
     importDecimalSeparator: ','
     importThoudandsSeparator: '.'
@@ -42,18 +43,25 @@ class @Numberphile
   # Initializes the element based on passed options.
   # @private
   initialize: ->
+    if @element.attr('data-autofocus') == "true"
+      @settings.autofocus = true
+
     if @settings.autowire
 
       if @element.attr('data-format') is 'import'
         @element.bind 'blur', () ->
           $(this).numberphile('formatImportToHumanReadableFormat')
-        .bind 'focusin', () ->
+        .bind 'focus', () ->
           $(this).numberphile('editModeForImport')
         .keydown (event) ->
           if !eventKeyCodeFitsImport(event)
             event.preventDefault()
         .val( N(@element.val()).val('import') )
-  
+
+    if @settings.autofocus
+      @element.bind 'focus', () ->
+        this.select()
+
   # Call this to format matched element value in a simple numeric format
   # @example
   #   $('input.import').numberphile('humanReadableImportToNumber')

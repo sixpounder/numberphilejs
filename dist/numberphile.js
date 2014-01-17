@@ -207,6 +207,7 @@
     Numberphile.prototype.defaults = {
       debug: false,
       autowire: true,
+      autofocus: false,
       importMaxDecimalDigits: 2,
       importDecimalSeparator: ',',
       importThoudandsSeparator: '.'
@@ -220,11 +221,14 @@
     }
 
     Numberphile.prototype.initialize = function() {
+      if (this.element.attr('data-autofocus') === "true") {
+        this.settings.autofocus = true;
+      }
       if (this.settings.autowire) {
         if (this.element.attr('data-format') === 'import') {
-          return this.element.bind('blur', function() {
+          this.element.bind('blur', function() {
             return $(this).numberphile('formatImportToHumanReadableFormat');
-          }).bind('focusin', function() {
+          }).bind('focus', function() {
             return $(this).numberphile('editModeForImport');
           }).keydown(function(event) {
             if (!eventKeyCodeFitsImport(event)) {
@@ -232,6 +236,11 @@
             }
           }).val(N(this.element.val()).val('import'));
         }
+      }
+      if (this.settings.autofocus) {
+        return this.element.bind('focus', function() {
+          return this.select();
+        });
       }
     };
 
