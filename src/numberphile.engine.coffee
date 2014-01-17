@@ -1,3 +1,4 @@
+# Number engine
 class Numberphiler
 
   _T_INT = "int"
@@ -6,6 +7,9 @@ class Numberphiler
 
   decimalPrecision = 2
 
+  # Parses a root value, see {Numberphiler#smartParseFloat} for details
+  # @param {Number|String} root the root value to parse
+  # @private
   parse = (root) ->
     r = new NumberphileNumber()
 
@@ -19,6 +23,10 @@ class Numberphiler
 
     return r
 
+  # Parses a float checking if passed value is a string. If it is,
+  # applies currency protocol first
+  # @param {Number} v the value to conver
+  # @private
   smartParseFloat = (v)->
     if typeof v is "string"
       dots = v.match(/\./g)
@@ -42,46 +50,49 @@ class Numberphiler
 
     return parseFloat(v)
 
-  # intPartFor = (v) ->
-  #   if typeof v is "string"
-  #     v = smartParseFloat(v)
-  #   return parseInt(smartToFixed(v), 10)
-
-  # decimalPartFor = (v) ->
-  #   if typeof v is "string"
-  #     v = smartParseFloat(v)
-  #   return (v % 1).toPrecision(decimalPrecision) * Math.pow(10,decimalPrecision)
-
+  # Builds a new math engine
+  # @param {Number|String} v initial value
+  # @param {Object} options options for this instance
+  # @option options {Number} decimalPrecision the decimal precision to use (default 2)
   constructor: (v, opts = {}) ->
     @root = v
     decimalPrecision = opts.decimalPrecision || 2
     @repr = parse(@root)
 
+  # Adds a value to the current one
+  # @param {Number|String} something
+  # @return {Numberphiler} self for chainability
   add: (something) ->
     @repr.set(@repr.value + NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
+  # Divide current value by something
+  # @param {Number|String} something
+  # @return {Numberphiler} self for chainability
   divide: (something) ->
     @repr.set(@repr.value / NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
+  # Mod operator for current value
+  # @param {Number|String} something
+  # @return {Numberphiler} self for chainability
   mod: (something) ->
     @repr.set(@repr.value % NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
+  # Multiply current value by something
+  # @param {Number|String} something
+  # @return {Numberphiler} self for chainability
   multiply: (something) ->
     @repr.set(@repr.value * NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
+  # Subtract a value from the current one
+  # @param {Number|String} something
+  # @return {Numberphiler} self for chainability
   subtract: (something) ->
     @repr.set(@repr.value - NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
-
-  # intPart: () ->
-  #   intPartFor(@repr.value)
-
-  # decimalPart: () ->
-  #   decimalPartFor(@repr.decimalPart)
 
   # Alias for {Numberphiler#val}
   result: ->
@@ -91,11 +102,10 @@ class Numberphiler
   value: ->
     @val()
 
-  # @return the current result of the computation
+  # @return {Number|String} the current result of the computation. If a format is specified conversion will take place (currently supporting 'import', 'float' or nothing)
   val: (format = null) ->
     format ?= 'float'
     format = 'float' if format == ''
-    # concat = @repr.intPart + (@repr.decimalPart * Math.pow(10, - decimalPrecision))
     concat = @repr.value
     
     if format == 'float'
@@ -106,28 +116,36 @@ class Numberphiler
     
     return r
 
+# Represents an operation
 class NumberphileOperation
+  # Constructor for this class
   constructor: (@firstFactor = null, @secondFactor = null, @operator = null) ->
     @result = 0
     @remainder = null
 
+# Represents a number with an origin and a precision
 class NumberphileNumber
+  # @param origin the origin of the number (will be stored for debug purposes)
   constructor: (@origin = 0) ->
     @value = @origin
     @type = "unknown"
 
-  intPart: () ->
-
-  decimalPart: () ->
-
+  # Sets a value for this instance. It gets fixed with {NumberphileNumber.toFixed}
+  # prior to assignment
+  # @param v the value to set
   set: (v) ->
-    fv = NumberphileNumber.toFixed(v)
-    @value = parseFloat(fv)
+    fv = NumberphileNumber.toFixedNumber(v)
+    @value = fv
     @value
 
+  # Same as {NumberphileNumber.toFixed} but returns a number instead
+  # of a string
   @toFixedNumber: (value, precision) ->
     parseFloat(NumberphileNumber.toFixed(value, precision))
 
+  # Converts a value with a precision to a string representing it
+  # @param value the value to fix
+  # @param precision the decimal precision to use (default 2)
   @toFixed: (value, precision) ->
     precision = precision || 2
     neg = value < 0
