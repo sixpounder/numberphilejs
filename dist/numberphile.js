@@ -139,14 +139,10 @@
       this.type = "unknown";
     }
 
-    NumberphileNumber.prototype.intPart = function() {};
-
-    NumberphileNumber.prototype.decimalPart = function() {};
-
     NumberphileNumber.prototype.set = function(v) {
       var fv;
-      fv = NumberphileNumber.toFixed(v);
-      this.value = parseFloat(fv);
+      fv = NumberphileNumber.toFixedNumber(v);
+      this.value = fv;
       return this.value;
     };
 
