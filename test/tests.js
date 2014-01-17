@@ -37,8 +37,32 @@ describe('Numberphiler', function() {
         assert.equal(6000, f(6000).val());
     });
 
+    it("f(6000).multiply(2).val() should return 12000", function() {
+        assert.equal(12000, f(6000).multiply(2).val());
+    });
+
+    it("f(6000).add('4.000,30').add(1).val() should return 10.001.3", function() {
+        assert.equal(10001.3, f(6000).add('4.000,30').add(1).val());
+    });
+
+    it("f(6000).multiply(2.5).val() should return 15000", function() {
+        assert.equal(15000, f(6000).multiply(2.5).val());
+    });
+
+    it("f(6000).multiply('3,').val() should return 18000", function() {
+        assert.equal(18000, f(6000).multiply("3,").val());
+    });
+
+    it("f(6000.45).multiply(2).val() should return 18000", function() {
+        assert.equal(12000.9, f(6000.45).multiply(2).val());
+    });
+
     it("f(6000).val('import') should return '6.000,00'", function() {
         assert.equal("6.000,00", f(6000).val('import'));
+    });
+
+    it("f(6000).add('4.000,30').val('import') should return '10.000,30'", function() {
+        assert.equal("10.000,30", f(6000).add('4.000,30').val('import'));
     });
 
     it("f('6.000') should return 6 as value", function() {
