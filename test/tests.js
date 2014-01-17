@@ -3,6 +3,7 @@
 var assert = require('assert');
 var N = require('../dist/numberphile.js').NumberphileReactor;
 var E = require('../dist/numberphile.js').Numberphiler;
+var WrapperFunction = require('../dist/numberphile.js').N
 
 var f = function(v) {
     return new E(v);
@@ -11,6 +12,10 @@ var f = function(v) {
 describe('Numberphiler', function() {
     it("symbol Numberphiler should be defined (whatch your exports!)", function() {
         assert.notEqual("undefined", typeof E);
+    });
+
+    it("wrapper function N should be defined (whatch your exports!)", function() {
+        assert.notEqual("undefined", typeof WrapperFunction);
     });
 
     it("should expose add method", function() {

@@ -140,6 +140,8 @@ class NumberphileNumber
 
 if exports?
   exports.Numberphiler = Numberphiler
+  exports.N = (anyValue) ->
+    return new Numberphiler(anyValue)
 
 if window?
   @N = (anyValue) ->

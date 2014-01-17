@@ -19,6 +19,8 @@ npm install && grunt
 ___
 ## Numbers manipulation
 
+Following examples are for browser-side use.
+
 ###### Number parsing
 ```javascript
 N(6000).val() // -> 6000
@@ -40,4 +42,10 @@ N("6.000").divide('2').val() // -> 3000
 ```javascript
 N(6000).val('import'); // -> 6.000,00
 N(6000.2).val('import'); // -> 6.000,20
+```
+
+For node environment you will find Numberphiler class and N wrapper function in your exports
+```javascript
+var Numberphiler = require('numberphilejs').Numberphiler
+var N = require('numberphilejs').N
 ```

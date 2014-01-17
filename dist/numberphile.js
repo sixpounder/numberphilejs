@@ -176,6 +176,9 @@
 
   if (typeof exports !== "undefined" && exports !== null) {
     exports.Numberphiler = Numberphiler;
+    exports.N = function(anyValue) {
+      return new Numberphiler(anyValue);
+    };
   }
 
   if (typeof window !== "undefined" && window !== null) {
