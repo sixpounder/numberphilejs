@@ -1,5 +1,5 @@
-# Number engine
-class Numberphiler
+# Numberphile engine for conversions & math.
+class NumberphileReactor
 
   _T_INT = "int"
   _T_FLOAT = "float"
@@ -7,7 +7,7 @@ class Numberphiler
 
   decimalPrecision = 2
 
-  # Parses a root value, see {Numberphiler#smartParseFloat} for details
+  # Parses a root value, see {NumberphileReactor#smartParseFloat} for details
   # @param {Number|String} root the root value to parse
   # @private
   parse = (root) ->
@@ -61,44 +61,44 @@ class Numberphiler
 
   # Adds a value to the current one
   # @param {Number|String} something
-  # @return {Numberphiler} self for chainability
+  # @return {NumberphileReactor} self for chainability
   add: (something) ->
     @repr.set(@repr.value + NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   # Divide current value by something
   # @param {Number|String} something
-  # @return {Numberphiler} self for chainability
+  # @return {NumberphileReactor} self for chainability
   divide: (something) ->
     @repr.set(@repr.value / NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   # Mod operator for current value
   # @param {Number|String} something
-  # @return {Numberphiler} self for chainability
+  # @return {NumberphileReactor} self for chainability
   mod: (something) ->
     @repr.set(@repr.value % NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   # Multiply current value by something
   # @param {Number|String} something
-  # @return {Numberphiler} self for chainability
+  # @return {NumberphileReactor} self for chainability
   multiply: (something) ->
     @repr.set(@repr.value * NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   # Subtract a value from the current one
   # @param {Number|String} something
-  # @return {Numberphiler} self for chainability
+  # @return {NumberphileReactor} self for chainability
   subtract: (something) ->
     @repr.set(@repr.value - NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
-  # Alias for {Numberphiler#val}
+  # Alias for {NumberphileReactor#val}
   result: ->
     @val()
 
-  # Alias for {Numberphiler#val}
+  # Alias for {NumberphileReactor#val}
   value: ->
     @val()
 
@@ -156,11 +156,13 @@ class NumberphileNumber
     padding = new Array(Math.max(precision - fraction.length, 0) + 1).join("0")
     if precision then integral + "." + padding + fraction else integral
 
-if exports?
-  exports.Numberphiler = Numberphiler
-  exports.N = (anyValue) ->
-    return new Numberphiler(anyValue)
 
-if window?
-  @N = (anyValue) ->
-    return new Numberphiler(anyValue)
+# Wrapper function to instantiate a new reactor object
+# allowing syntax like N(42).add(...) ...
+@N = (anyValue) ->
+  return new NumberphileReactor(anyValue)
+
+if exports?
+  exports.NumberphileReactor = NumberphileReactor
+  exports.N = (anyValue) ->
+    return new NumberphileRector(anyValue)

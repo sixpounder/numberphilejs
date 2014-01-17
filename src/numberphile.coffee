@@ -52,7 +52,7 @@ class @Numberphile
         .keydown (event) ->
           if !eventKeyCodeFitsImport(event)
             event.preventDefault()
-        .val(NumberphileReactor.get().numberToFormattedImport(@element.val()))
+        .val( N(@element.val()).val('import') )
   
   # Call this to format matched element value in a simple numeric format
   # @example
@@ -116,16 +116,15 @@ class @Numberphile
       if console?.log && @settings.debug
         console.log(m)
 
-  # Stub to {NumberphileReactor#stringToFloat}
+  # Converts a string to a number
   # @private
   SToNumber: (value)->
-    NumberphileReactor.get().stringToFloat(value)
+    N(value).val()
 
-  # Stub to {NumberphileReactor#stringToFormattedImport}
+  # Converts a number to a formatted import
   # @private
   numberToS: (number)->
-    NumberphileReactor.get().stringToFormattedImport(number)
-
+    N(number).val('import')
 
 # Only extend jQuery if jQuery is present
 if $? && window?

@@ -52,7 +52,22 @@ class @NumberphileCounter
       else
         $this.text(s)
 
-      $this.trigger('numberphile:step')
+      $this.trigger('numberphile:change')
+
+
+  # Sets target value directly
+  # @param v the value to set into the target
+  set: (v) ->
+    targets = $(@element.attr('data-target'))
+    targets.each () ->
+      $this = $(this)
+      s = parseFloat(v)
+      if $this.is('input')
+        $(this).val(s)
+      else
+        $this.text(s)
+
+      $this.trigger('numberphile:change')
 
 if window? && $?
   (($, window) ->

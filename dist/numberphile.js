@@ -1,8 +1,8 @@
 (function() {
-  var NumberphileNumber, NumberphileOperation, Numberphiler, _,
+  var NumberphileNumber, NumberphileOperation, NumberphileReactor,
     __slice = [].slice;
 
-  Numberphiler = (function() {
+  NumberphileReactor = (function() {
     var decimalPrecision, parse, smartParseFloat, _T_FLOAT, _T_INT, _T_NUMBER;
 
     _T_INT = "int";
@@ -52,7 +52,7 @@
       return parseFloat(v);
     };
 
-    function Numberphiler(v, opts) {
+    function NumberphileReactor(v, opts) {
       if (opts == null) {
         opts = {};
       }
@@ -61,40 +61,40 @@
       this.repr = parse(this.root);
     }
 
-    Numberphiler.prototype.add = function(something) {
+    NumberphileReactor.prototype.add = function(something) {
       this.repr.set(this.repr.value + NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
-    Numberphiler.prototype.divide = function(something) {
+    NumberphileReactor.prototype.divide = function(something) {
       this.repr.set(this.repr.value / NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
-    Numberphiler.prototype.mod = function(something) {
+    NumberphileReactor.prototype.mod = function(something) {
       this.repr.set(this.repr.value % NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
-    Numberphiler.prototype.multiply = function(something) {
+    NumberphileReactor.prototype.multiply = function(something) {
       this.repr.set(this.repr.value * NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
-    Numberphiler.prototype.subtract = function(something) {
+    NumberphileReactor.prototype.subtract = function(something) {
       this.repr.set(this.repr.value - NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
-    Numberphiler.prototype.result = function() {
+    NumberphileReactor.prototype.result = function() {
       return this.val();
     };
 
-    Numberphiler.prototype.value = function() {
+    NumberphileReactor.prototype.value = function() {
       return this.val();
     };
 
-    Numberphiler.prototype.val = function(format) {
+    NumberphileReactor.prototype.val = function(format) {
       var concat, r;
       if (format == null) {
         format = null;
@@ -115,7 +115,7 @@
       return r;
     };
 
-    return Numberphiler;
+    return NumberphileReactor;
 
   })();
 
@@ -170,184 +170,157 @@
 
   })();
 
+  this.N = function(anyValue) {
+    return new NumberphileReactor(anyValue);
+  };
+
   if (typeof exports !== "undefined" && exports !== null) {
-    exports.Numberphiler = Numberphiler;
+    exports.NumberphileReactor = NumberphileReactor;
     exports.N = function(anyValue) {
-      return new Numberphiler(anyValue);
+      return new NumberphileRector(anyValue);
     };
-  }
-
-  if (typeof window !== "undefined" && window !== null) {
-    this.N = function(anyValue) {
-      return new Numberphiler(anyValue);
-    };
-  }
-
-  if (typeof window !== "undefined" && window !== null) {
-    if (typeof $ !== "undefined" && $ !== null) {
-      _ = $;
-    } else {
-      throw new Error("jQuery is required by NumberphileJS when running in a browser");
-    }
-  } else {
-    _ = require('underscore');
   }
 
   /*
-  Numberphile engine for conversions & math.
-  @example Instantiate and retrieve via
-    NumberphileReactor.get()
-  See {NumberphileReactor.get} for more details
+  jQuery plugin object to encapsulate methods and stuff
+  It delegates math and conversions to {NumberphileReactor}
+  @example Initialize plugin via javascript
+    $('input.import').numberphile();
+  @example Auto init the plugin by adding data attributes
+    <input data-numberphile="auto" data-format="import" value="123"/>
   @copyright Andrea Coronese
   */
 
 
-  this.NumberphileReactor = (function() {
-    var instance;
+  this.Numberphile = (function() {
+    var charFromEvent, eventKeyCodeFitsImport, _regexps;
 
-    function NumberphileReactor() {}
-
-    instance = null;
-
-    NumberphileReactor.get = function() {
-      if (this.instance == null) {
-        instance = new this();
-        instance.init("NumberphileReactor");
-      }
-      return instance;
+    Numberphile.prototype._f_selectors = {
+      numberInput: 'input[type=text], input[type=number]'
     };
 
-    NumberphileReactor.prototype.regexps = {
+    _regexps = {
       thousandsMatch: /\B(?=(\d{3})+(?!\d))/g,
-      importTypableCharacter: /[0-9,\.]/g,
-      importNonValidCharacters: /[^A-Za-z\d,]/g
+      importTypableCharacter: /[0-9,\.]/g
     };
 
-    NumberphileReactor.prototype.defaults = {
+    Numberphile.prototype.defaults = {
       debug: false,
-      importDecimalSeparator: ",",
-      importThoudandsSeparator: ".",
-      importMaxDecimalDigits: 2
+      autowire: true,
+      importMaxDecimalDigits: 2,
+      importDecimalSeparator: ',',
+      importThoudandsSeparator: '.'
     };
 
-    NumberphileReactor.prototype.init = function(name, options) {
-      if (name == null) {
-        name = "unknown";
-      }
-      if (options == null) {
-        options = {};
-      }
-      this.settings = _.extend(this.defaults, options);
-      return this.log("" + name + " initialized");
-    };
+    function Numberphile(element, options) {
+      this.element = element;
+      this.settings = $.extend(this.defaults, options);
+      this.initialize();
+      return this;
+    }
 
-    NumberphileReactor.prototype.setup = function(options) {
-      if (options != null) {
-        this.settings = _.extend(this.defaults, options);
-      }
-      return this.settings;
-    };
-
-    NumberphileReactor.prototype.log = function(m) {
-      if ((typeof console !== "undefined" && console !== null ? console.log : void 0) && this.settings.debug) {
-        return console.log(m);
-      }
-    };
-
-    NumberphileReactor.prototype.stringToFloat = function(repr) {
-      return parseFloat(repr.toString().replace(this.regexps.importNonValidCharacters, "").replace(this.settings.importDecimalSeparator, this.settings.importThoudandsSeparator));
-    };
-
-    NumberphileReactor.prototype.numberToFormattedImport = function(number) {
-      return this.stringToFormattedImport(number.toString());
-    };
-
-    NumberphileReactor.prototype.stringToFormattedImport = function(repr) {
-      var decimalPart, intPart, j, out, p, remainingChars, _i;
-      out = "";
-      if (typeof repr === 'string') {
-        p = repr.indexOf(this.settings.importDecimalSeparator);
-        if (p === -1) {
-          this.log("No decimals found by character " + this.settings.importDecimalSeparator);
-          out = repr + this.settings.importDecimalSeparator + "00";
-        } else {
-          intPart = repr.split(this.settings.importDecimalSeparator)[0];
-          decimalPart = repr.split(this.settings.importDecimalSeparator)[1];
-          if (decimalPart.length > this.settings.importMaxDecimalDigits) {
-            decimalPart = decimalPart.substring(0, this.settings.importMaxDecimalDigits);
-          } else {
-            if (decimalPart.length > this.settings.importMaxDecimalDigits) {
-              remainingChars = 0;
-            } else {
-              remainingChars = this.settings.importMaxDecimalDigits - decimalPart.length;
+    Numberphile.prototype.initialize = function() {
+      if (this.settings.autowire) {
+        if (this.element.attr('data-format') === 'import') {
+          return this.element.bind('blur', function() {
+            return $(this).numberphile('formatImportToHumanReadableFormat');
+          }).bind('focusin', function() {
+            return $(this).numberphile('editModeForImport');
+          }).keydown(function(event) {
+            if (!eventKeyCodeFitsImport(event)) {
+              return event.preventDefault();
             }
-          }
-          if (remainingChars !== 0) {
-            for (j = _i = 1; 1 <= remainingChars ? _i <= remainingChars : _i >= remainingChars; j = 1 <= remainingChars ? ++_i : --_i) {
-              decimalPart += "0";
-            }
-          }
-          this.log("int part: " + intPart + " decimal part: " + decimalPart);
-          out = intPart + this.settings.importDecimalSeparator + decimalPart;
+          }).val(N(this.element.val()).val('import'));
         }
-        out = out.replace(this.regexps.thousandsMatch, this.settings.importThoudandsSeparator);
-        this.log("final representation: " + out);
-        return out;
+      }
+    };
+
+    Numberphile.prototype.humanReadableImportToNumber = function() {
+      if (this.element.is(this._f_selectors.numberInput)) {
+        return this.element.val(this.SToNumber(this.element.val()));
+      }
+    };
+
+    Numberphile.prototype.editModeForImport = function() {
+      if (this.element.is(this._f_selectors.numberInput)) {
+        return this.element.val(this.SToNumber(this.element.val()).toString().replace('.', this.settings.importDecimalSeparator));
+      }
+    };
+
+    Numberphile.prototype.formatImportToHumanReadableFormat = function() {
+      if (this.element.is(this._f_selectors.numberInput)) {
+        return this.element.val(this.numberToS(this.element.val()));
+      }
+    };
+
+    eventKeyCodeFitsImport = function(event) {
+      if (event.keyCode === 188 || event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 || event.keyCode === 13 || (event.keyCode === 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39)) {
+        return true;
       } else {
-        return repr;
-      }
-    };
-
-    NumberphileReactor.prototype.add = function(values) {
-      var s, v, _i, _len;
-      if (values == null) {
-        values = [];
-      }
-      s = 0;
-      for (_i = 0, _len = values.length; _i < _len; _i++) {
-        v = values[_i];
-        if (typeof v === "string") {
-          v = this.stringToFloat(v);
-        }
-        s += v;
-      }
-      return s;
-    };
-
-    NumberphileReactor.prototype.sum = function(reprs) {
-      if (reprs != null) {
-        if (Object.prototype.toString.call(reprs) === '[object Array]') {
-          return this.sumImpl(reprs);
-        } else if (typeof reprs === "string") {
-          return this.sumImpl(reprs.split("|"));
+        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+          return false;
         } else {
-          return 0;
+          return true;
         }
-      } else {
-        return null;
       }
     };
 
-    NumberphileReactor.prototype.sumImpl = function(arr) {
-      var n, number, s, _i, _len;
-      s = 0;
-      for (_i = 0, _len = arr.length; _i < _len; _i++) {
-        number = arr[_i];
-        n = number;
-        if (typeof n === "string") {
-          n = this.stringToFloat(n);
-        }
-        s += n;
-      }
-      return parseFloat(s.toFixed(this.settings.importMaxDecimalDigits));
+    charFromEvent = function(evt) {
+      var charCode, charTyped;
+      evt = evt || window.event;
+      charCode = evt.which || evt.keyCode;
+      charTyped = String.fromCharCode(charCode);
+      return charTyped;
     };
 
-    return NumberphileReactor;
+    Numberphile.prototype.log = function(m) {
+      if (this.settings) {
+        if ((typeof console !== "undefined" && console !== null ? console.log : void 0) && this.settings.debug) {
+          return console.log(m);
+        }
+      }
+    };
+
+    Numberphile.prototype.SToNumber = function(value) {
+      return N(value).val();
+    };
+
+    Numberphile.prototype.numberToS = function(number) {
+      return N(number).val('import');
+    };
+
+    return Numberphile;
 
   })();
 
-  if (typeof exports !== "undefined" && exports !== null) {
-    exports.NumberphileReactor = this.NumberphileReactor;
+  if ((typeof $ !== "undefined" && $ !== null) && (typeof window !== "undefined" && window !== null)) {
+    (function($, window) {
+      return $.fn.extend({
+        numberphile: function() {
+          var args, options;
+          options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+          return this.each(function() {
+            var $this, data;
+            $this = $(this);
+            data = $this.data('numberphile-class');
+            if (!data) {
+              $this.data('numberphile-class', (data = new Numberphile($this, options)));
+            }
+            if (typeof options === 'string') {
+              return data[options].apply(data, args);
+            }
+          });
+        }
+      });
+    })(window.jQuery, window);
+  }
+
+  if ((typeof window !== "undefined" && window !== null) && (typeof $ !== "undefined" && $ !== null)) {
+    !(function($) {
+      return $(window).bind('load', function() {
+        return $('[data-numberphile="auto"]').numberphile();
+      });
+    })(window.jQuery);
   }
 
   /*
@@ -401,7 +374,23 @@
         } else {
           $this.text(s);
         }
-        return $this.trigger('numberphile:step');
+        return $this.trigger('numberphile:change');
+      });
+    };
+
+    NumberphileCounter.prototype.set = function(v) {
+      var targets;
+      targets = $(this.element.attr('data-target'));
+      return targets.each(function() {
+        var $this, s;
+        $this = $(this);
+        s = parseFloat(v);
+        if ($this.is('input')) {
+          $(this).val(s);
+        } else {
+          $this.text(s);
+        }
+        return $this.trigger('numberphile:change');
       });
     };
 
@@ -447,148 +436,6 @@
             });
           }
         });
-      });
-    })(window.jQuery);
-  }
-
-  /*
-  jQuery plugin object to encapsulate methods and stuff
-  It delegates math and conversions to {NumberphileReactor}
-  @example Initialize plugin via javascript
-    $('input.import').numberphile();
-  @example Auto init the plugin by adding data attributes
-    <input data-numberphile="auto" data-format="import" value="123"/>
-  @copyright Andrea Coronese
-  */
-
-
-  this.Numberphile = (function() {
-    var charFromEvent, eventKeyCodeFitsImport, _regexps;
-
-    Numberphile.prototype._f_selectors = {
-      numberInput: 'input[type=text], input[type=number]'
-    };
-
-    _regexps = {
-      thousandsMatch: /\B(?=(\d{3})+(?!\d))/g,
-      importTypableCharacter: /[0-9,\.]/g
-    };
-
-    Numberphile.prototype.defaults = {
-      debug: false,
-      autowire: true,
-      importMaxDecimalDigits: 2,
-      importDecimalSeparator: ',',
-      importThoudandsSeparator: '.'
-    };
-
-    function Numberphile(element, options) {
-      this.element = element;
-      this.settings = $.extend(this.defaults, options);
-      this.initialize();
-      return this;
-    }
-
-    Numberphile.prototype.initialize = function() {
-      if (this.settings.autowire) {
-        if (this.element.attr('data-format') === 'import') {
-          return this.element.bind('blur', function() {
-            return $(this).numberphile('formatImportToHumanReadableFormat');
-          }).bind('focusin', function() {
-            return $(this).numberphile('editModeForImport');
-          }).keydown(function(event) {
-            if (!eventKeyCodeFitsImport(event)) {
-              return event.preventDefault();
-            }
-          }).val(NumberphileReactor.get().numberToFormattedImport(this.element.val()));
-        }
-      }
-    };
-
-    Numberphile.prototype.humanReadableImportToNumber = function() {
-      if (this.element.is(this._f_selectors.numberInput)) {
-        return this.element.val(this.SToNumber(this.element.val()));
-      }
-    };
-
-    Numberphile.prototype.editModeForImport = function() {
-      if (this.element.is(this._f_selectors.numberInput)) {
-        return this.element.val(this.SToNumber(this.element.val()).toString().replace('.', this.settings.importDecimalSeparator));
-      }
-    };
-
-    Numberphile.prototype.formatImportToHumanReadableFormat = function() {
-      if (this.element.is(this._f_selectors.numberInput)) {
-        return this.element.val(this.numberToS(this.element.val()));
-      }
-    };
-
-    eventKeyCodeFitsImport = function(event) {
-      if (event.keyCode === 188 || event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 || event.keyCode === 13 || (event.keyCode === 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39)) {
-        return true;
-      } else {
-        if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
-          return false;
-        } else {
-          return true;
-        }
-      }
-    };
-
-    charFromEvent = function(evt) {
-      var charCode, charTyped;
-      evt = evt || window.event;
-      charCode = evt.which || evt.keyCode;
-      charTyped = String.fromCharCode(charCode);
-      return charTyped;
-    };
-
-    Numberphile.prototype.log = function(m) {
-      if (this.settings) {
-        if ((typeof console !== "undefined" && console !== null ? console.log : void 0) && this.settings.debug) {
-          return console.log(m);
-        }
-      }
-    };
-
-    Numberphile.prototype.SToNumber = function(value) {
-      return NumberphileReactor.get().stringToFloat(value);
-    };
-
-    Numberphile.prototype.numberToS = function(number) {
-      return NumberphileReactor.get().stringToFormattedImport(number);
-    };
-
-    return Numberphile;
-
-  })();
-
-  if ((typeof $ !== "undefined" && $ !== null) && (typeof window !== "undefined" && window !== null)) {
-    (function($, window) {
-      return $.fn.extend({
-        numberphile: function() {
-          var args, options;
-          options = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-          return this.each(function() {
-            var $this, data;
-            $this = $(this);
-            data = $this.data('numberphile-class');
-            if (!data) {
-              $this.data('numberphile-class', (data = new Numberphile($this, options)));
-            }
-            if (typeof options === 'string') {
-              return data[options].apply(data, args);
-            }
-          });
-        }
-      });
-    })(window.jQuery, window);
-  }
-
-  if ((typeof window !== "undefined" && window !== null) && (typeof $ !== "undefined" && $ !== null)) {
-    !(function($) {
-      return $(window).bind('load', function() {
-        return $('[data-numberphile="auto"]').numberphile();
       });
     })(window.jQuery);
   }
