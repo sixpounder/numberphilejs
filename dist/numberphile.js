@@ -224,6 +224,9 @@
       if (this.element.attr('data-autofocus') === "true") {
         this.settings.autofocus = true;
       }
+      if (this.element.attr('data-autowire') === "true") {
+        this.settings.autowire = true;
+      }
       if (this.settings.autowire) {
         if (this.element.attr('data-format') === 'import') {
           this.element.bind('blur', function() {
@@ -327,7 +330,25 @@
   if ((typeof window !== "undefined" && window !== null) && (typeof $ !== "undefined" && $ !== null)) {
     !(function($) {
       return $(window).bind('load', function() {
-        return $('[data-numberphile="auto"]').numberphile();
+        return $('[data-numberphile="auto"]').each(function() {
+          var $this, data, e;
+          $this = $(this);
+          try {
+            data = $this.data();
+            if (data != null) {
+              return $this.numberphile(data);
+            }
+          } catch (_error) {
+            e = _error;
+            return $this.numberphile({
+              autowire: $this.attr('data-autowire') === "true" ? true : false,
+              autofocus: $this.attr('data-autofocus') === "true" ? true : false,
+              importMaxDecimalDigits: $this.attr('data-importMaxDecimalDigits'),
+              importDecimalSeparator: $this.attr('data-importDecimalSeparator'),
+              importThoudandsSeparator: $this.attr('data-importThoudandsSeparator')
+            });
+          }
+        });
       });
     })(window.jQuery);
   }

@@ -46,6 +46,10 @@ class @Numberphile
     if @element.attr('data-autofocus') == "true"
       @settings.autofocus = true
 
+    if @element.attr('data-autowire') == "true"
+      @settings.autowire = true
+    
+
     if @settings.autowire
 
       if @element.attr('data-format') is 'import'
@@ -152,5 +156,19 @@ if $? && window?
 if window? && $?
   !(($) ->
     $(window).bind 'load', ()->
-      $('[data-numberphile="auto"]').numberphile()
+      $('[data-numberphile="auto"]').each () ->
+        $this = $(this)
+        try
+          data = $this.data()
+          if data?
+            $this.numberphile(data)
+        catch e
+          # Old version of jQuery
+          $this.numberphile
+            autowire: if $this.attr('data-autowire') == "true" then true else false
+            autofocus: if $this.attr('data-autofocus') == "true" then true else false
+            importMaxDecimalDigits: $this.attr('data-importMaxDecimalDigits')
+            importDecimalSeparator: $this.attr('data-importDecimalSeparator')
+            importThoudandsSeparator: $this.attr('data-importThoudandsSeparator')
+
   ) window.jQuery
