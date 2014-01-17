@@ -4,9 +4,57 @@ var assert = require('assert');
 var N = require('../dist/numberphile.js').NumberphileReactor;
 var E = require('../dist/numberphile.js').Numberphiler;
 
-describe('Numberphiler (BASE)', function() {
+var f = function(v) {
+    return new E(v);
+};
+
+describe('Numberphiler', function() {
     it("symbol Numberphiler should be defined (whatch your exports!)", function() {
         assert.notEqual("undefined", typeof E);
+    });
+
+    it("should expose add method", function() {
+        assert.notEqual("undefined", typeof f(1).add);
+    });
+
+    it("should expose divide method", function() {
+        assert.notEqual("undefined", typeof f(1).divide);
+    });
+
+    it("should expose multiply method", function() {
+        assert.notEqual("undefined", typeof f(1).multiply);
+    });
+
+    it("should expose subtract method", function() {
+        assert.notEqual("undefined", typeof f(1).subtract);
+    });
+
+    it("should expose mod method", function() {
+        assert.notEqual("undefined", typeof f(1).mod);
+    });
+
+    it("f(6000) should return 6000 as value", function() {
+        assert.equal(6000, f(6000).val());
+    });    
+
+    it("f('6.000') should return 6 as value", function() {
+        assert.equal(6, f("6.000").val());
+    });
+
+    it("f('6.000,') should return 6000 as value", function() {
+        assert.equal(6000, f("6.000,").val());
+    });
+
+    it("f('6.000,01') should return 6000.01 as value", function() {
+        assert.equal(6000.01, f("6.000,01").val());
+    });
+
+    it("f('6.000,01').add(6000) should return 12000.01 as value", function() {
+        assert.equal(12000.01, f('6.000,01').add(6000).val());
+    });
+
+    it("f('6.000,01').subtract(6000) should return 0.01 as value", function() {
+        assert.equal(0.01, f(6000.01).subtract(6000).val());
     });
 });
 

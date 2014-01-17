@@ -15,9 +15,7 @@ class Numberphiler
     else if typeof root is "number"
       r.type = _T_NUMBER
       r.origin = root
-    #r.intPart = intPartFor(root)
-    #r.decimalPart = decimalPartFor(root)
-    r.value = smartParseFloat(root)
+    r.set(smartParseFloat(root))
 
     return r
 
@@ -44,15 +42,15 @@ class Numberphiler
 
     return parseFloat(v)
 
-  intPartFor = (v) ->
-    if typeof v is "string"
-      v = smartParseFloat(v)
-    return parseInt(v.toFixed(), 10)
+  # intPartFor = (v) ->
+  #   if typeof v is "string"
+  #     v = smartParseFloat(v)
+  #   return parseInt(smartToFixed(v), 10)
 
-  decimalPartFor = (v) ->
-    if typeof v is "string"
-      v = smartParseFloat(v)
-    return (v % 1).toPrecision(decimalPrecision) * Math.pow(10,decimalPrecision)
+  # decimalPartFor = (v) ->
+  #   if typeof v is "string"
+  #     v = smartParseFloat(v)
+  #   return (v % 1).toPrecision(decimalPrecision) * Math.pow(10,decimalPrecision)
 
   constructor: (v, opts = {}) ->
     @root = v
@@ -60,22 +58,30 @@ class Numberphiler
     @repr = parse(@root)
 
   add: (something) ->
-    @repr.value += smartParseFloat(something)
+    @repr.set(@repr.value + NumberphileNumber.toFixed(smartParseFloat(something)))
     @
 
   divide: (something) ->
-    @repr.value = @repr.value / smartParseFloat(something)
+    @repr.set(@repr.value / NumberphileNumber.toFixed(smartParseFloat(something)))
     @
 
   mod: (something) ->
-    @repr.value = @repr.value % smartParseFloat(something)
+    @repr.set(@repr.value % NumberphileNumber.toFixed(smartParseFloat(something)))
     @
 
-  intPart: () ->
-    intPartFor(@repr.value)
+  multiply: (something) ->
+    @repr.set(@repr.value * NumberphileNumber.toFixed(smartParseFloat(something)))
+    @
 
-  decimalPart: () ->
-    decimalPartFor(@repr.decimalPart)
+  subtract: (something) ->
+    @repr.set(@repr.value - NumberphileNumber.toFixed(smartParseFloat(something)))
+    @
+
+  # intPart: () ->
+  #   intPartFor(@repr.value)
+
+  # decimalPart: () ->
+  #   decimalPartFor(@repr.decimalPart)
 
   # Alias for {Numberphiler#val}
   result: ->
@@ -96,7 +102,7 @@ class Numberphiler
       r = concat
     
     if format == 'import'
-      r = concat.toFixed(decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      r = smartToFixed(concat).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     
     return r
 
@@ -113,6 +119,21 @@ class NumberphileNumber
   intPart: () ->
 
   decimalPart: () ->
+
+  set: (v) ->
+    fv = NumberphileNumber.toFixed(v)
+    @value = parseFloat(fv)
+    @value
+
+  @toFixed: (value, precision) ->
+    precision = precision || 2
+    neg = value < 0
+    power = Math.pow(10, precision)
+    value = Math.round(value * power)
+    integral = String(((if neg then Math.ceil else Math.floor))(value / power))
+    fraction = String(((if neg then -value else value)) % power)
+    padding = new Array(Math.max(precision - fraction.length, 0) + 1).join("0")
+    if precision then parseFloat(integral + "." + padding + fraction) else parseFloat(integral)
 
 if exports?
   exports.Numberphiler = Numberphiler

@@ -2,6 +2,184 @@
   var NumberphileNumber, NumberphileOperation, Numberphiler, _,
     __slice = [].slice;
 
+  Numberphiler = (function() {
+    var decimalPrecision, parse, smartParseFloat, _T_FLOAT, _T_INT, _T_NUMBER;
+
+    _T_INT = "int";
+
+    _T_FLOAT = "float";
+
+    _T_NUMBER = "number";
+
+    decimalPrecision = 2;
+
+    parse = function(root) {
+      var r;
+      r = new NumberphileNumber();
+      if (typeof root === "string") {
+        r.type = _T_FLOAT;
+        r.origin = smartParseFloat(root);
+      } else if (typeof root === "number") {
+        r.type = _T_NUMBER;
+        r.origin = root;
+      }
+      r.set(smartParseFloat(root));
+      return r;
+    };
+
+    smartParseFloat = function(v) {
+      var commas, dots;
+      if (typeof v === "string") {
+        dots = v.match(/\./g);
+        commas = v.match(/,/g);
+        if (commas != null) {
+          commas = commas.length;
+        } else {
+          commas = 0;
+        }
+        if (dots != null) {
+          dots = dots.length;
+        } else {
+          dots = 0;
+        }
+        if (commas > 0 || (commas === 0 && dots > 1)) {
+          if (dots > 0) {
+            v = v.replace(/\./g, '');
+          }
+        }
+        v = v.replace(/,/g, '.');
+      }
+      return parseFloat(v);
+    };
+
+    function Numberphiler(v, opts) {
+      if (opts == null) {
+        opts = {};
+      }
+      this.root = v;
+      decimalPrecision = opts.decimalPrecision || 2;
+      this.repr = parse(this.root);
+    }
+
+    Numberphiler.prototype.add = function(something) {
+      this.repr.set(this.repr.value + NumberphileNumber.toFixed(smartParseFloat(something)));
+      return this;
+    };
+
+    Numberphiler.prototype.divide = function(something) {
+      this.repr.set(this.repr.value / NumberphileNumber.toFixed(smartParseFloat(something)));
+      return this;
+    };
+
+    Numberphiler.prototype.mod = function(something) {
+      this.repr.set(this.repr.value % NumberphileNumber.toFixed(smartParseFloat(something)));
+      return this;
+    };
+
+    Numberphiler.prototype.multiply = function(something) {
+      this.repr.set(this.repr.value * NumberphileNumber.toFixed(smartParseFloat(something)));
+      return this;
+    };
+
+    Numberphiler.prototype.subtract = function(something) {
+      this.repr.set(this.repr.value - NumberphileNumber.toFixed(smartParseFloat(something)));
+      return this;
+    };
+
+    Numberphiler.prototype.result = function() {
+      return this.val();
+    };
+
+    Numberphiler.prototype.value = function() {
+      return this.val();
+    };
+
+    Numberphiler.prototype.val = function(format) {
+      var concat, r;
+      if (format == null) {
+        format = null;
+      }
+      if (format == null) {
+        format = 'float';
+      }
+      if (format === '') {
+        format = 'float';
+      }
+      concat = this.repr.value;
+      if (format === 'float') {
+        r = concat;
+      }
+      if (format === 'import') {
+        r = smartToFixed(concat).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+      return r;
+    };
+
+    return Numberphiler;
+
+  })();
+
+  NumberphileOperation = (function() {
+    function NumberphileOperation(firstFactor, secondFactor, operator) {
+      this.firstFactor = firstFactor != null ? firstFactor : null;
+      this.secondFactor = secondFactor != null ? secondFactor : null;
+      this.operator = operator != null ? operator : null;
+      this.result = 0;
+      this.remainder = null;
+    }
+
+    return NumberphileOperation;
+
+  })();
+
+  NumberphileNumber = (function() {
+    function NumberphileNumber(origin) {
+      this.origin = origin != null ? origin : 0;
+      this.value = this.origin;
+      this.type = "unknown";
+    }
+
+    NumberphileNumber.prototype.intPart = function() {};
+
+    NumberphileNumber.prototype.decimalPart = function() {};
+
+    NumberphileNumber.prototype.set = function(v) {
+      var fv;
+      fv = NumberphileNumber.toFixed(v);
+      this.value = parseFloat(fv);
+      return this.value;
+    };
+
+    NumberphileNumber.toFixed = function(value, precision) {
+      var fraction, integral, neg, padding, power;
+      precision = precision || 2;
+      neg = value < 0;
+      power = Math.pow(10, precision);
+      value = Math.round(value * power);
+      integral = String((neg ? Math.ceil : Math.floor)(value / power));
+      fraction = String((neg ? -value : value) % power);
+      padding = new Array(Math.max(precision - fraction.length, 0) + 1).join("0");
+      if (precision) {
+        return parseFloat(integral + "." + padding + fraction);
+      } else {
+        return parseFloat(integral);
+      }
+    };
+
+    return NumberphileNumber;
+
+  })();
+
+  if (typeof exports !== "undefined" && exports !== null) {
+    exports.Numberphiler = Numberphiler;
+  }
+
+  if (typeof window !== "undefined" && window !== null) {
+    this.N = function(anyValue) {
+      return new Numberphiler(anyValue);
+    };
+  }
+
   if (typeof window !== "undefined" && window !== null) {
     if (typeof $ !== "undefined" && $ !== null) {
       _ = $;
@@ -167,173 +345,6 @@
 
   if (typeof exports !== "undefined" && exports !== null) {
     exports.NumberphileReactor = this.NumberphileReactor;
-  }
-
-  Numberphiler = (function() {
-    var decimalPartFor, decimalPrecision, intPartFor, parse, smartParseFloat, _T_FLOAT, _T_INT, _T_NUMBER;
-
-    _T_INT = "int";
-
-    _T_FLOAT = "float";
-
-    _T_NUMBER = "number";
-
-    decimalPrecision = 2;
-
-    parse = function(root) {
-      var r;
-      r = new NumberphileNumber();
-      if (typeof root === "string") {
-        r.type = _T_FLOAT;
-        r.origin = smartParseFloat(root);
-      } else if (typeof root === "number") {
-        r.type = _T_NUMBER;
-        r.origin = root;
-      }
-      r.value = smartParseFloat(root);
-      return r;
-    };
-
-    smartParseFloat = function(v) {
-      var commas, dots;
-      if (typeof v === "string") {
-        dots = v.match(/\./g);
-        commas = v.match(/,/g);
-        if (commas != null) {
-          commas = commas.length;
-        } else {
-          commas = 0;
-        }
-        if (dots != null) {
-          dots = dots.length;
-        } else {
-          dots = 0;
-        }
-        if (commas > 0 || (commas === 0 && dots > 1)) {
-          if (dots > 0) {
-            v = v.replace(/\./g, '');
-          }
-        }
-        v = v.replace(/,/g, '.');
-      }
-      return parseFloat(v);
-    };
-
-    intPartFor = function(v) {
-      if (typeof v === "string") {
-        v = smartParseFloat(v);
-      }
-      return parseInt(v.toFixed(), 10);
-    };
-
-    decimalPartFor = function(v) {
-      if (typeof v === "string") {
-        v = smartParseFloat(v);
-      }
-      return (v % 1).toPrecision(decimalPrecision) * Math.pow(10, decimalPrecision);
-    };
-
-    function Numberphiler(v, opts) {
-      if (opts == null) {
-        opts = {};
-      }
-      this.root = v;
-      decimalPrecision = opts.decimalPrecision || 2;
-      this.repr = parse(this.root);
-    }
-
-    Numberphiler.prototype.add = function(something) {
-      this.repr.value += smartParseFloat(something);
-      return this;
-    };
-
-    Numberphiler.prototype.divide = function(something) {
-      this.repr.value = this.repr.value / smartParseFloat(something);
-      return this;
-    };
-
-    Numberphiler.prototype.mod = function(something) {
-      this.repr.value = this.repr.value % smartParseFloat(something);
-      return this;
-    };
-
-    Numberphiler.prototype.intPart = function() {
-      return intPartFor(this.repr.value);
-    };
-
-    Numberphiler.prototype.decimalPart = function() {
-      return decimalPartFor(this.repr.decimalPart);
-    };
-
-    Numberphiler.prototype.result = function() {
-      return this.val();
-    };
-
-    Numberphiler.prototype.value = function() {
-      return this.val();
-    };
-
-    Numberphiler.prototype.val = function(format) {
-      var concat, r;
-      if (format == null) {
-        format = null;
-      }
-      if (format == null) {
-        format = 'float';
-      }
-      if (format === '') {
-        format = 'float';
-      }
-      concat = this.repr.value;
-      if (format === 'float') {
-        r = concat;
-      }
-      if (format === 'import') {
-        r = concat.toFixed(decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      }
-      return r;
-    };
-
-    return Numberphiler;
-
-  })();
-
-  NumberphileOperation = (function() {
-    function NumberphileOperation(firstFactor, secondFactor, operator) {
-      this.firstFactor = firstFactor != null ? firstFactor : null;
-      this.secondFactor = secondFactor != null ? secondFactor : null;
-      this.operator = operator != null ? operator : null;
-      this.result = 0;
-      this.remainder = null;
-    }
-
-    return NumberphileOperation;
-
-  })();
-
-  NumberphileNumber = (function() {
-    function NumberphileNumber(origin) {
-      this.origin = origin != null ? origin : 0;
-      this.value = this.origin;
-      this.type = "unknown";
-    }
-
-    NumberphileNumber.prototype.intPart = function() {};
-
-    NumberphileNumber.prototype.decimalPart = function() {};
-
-    return NumberphileNumber;
-
-  })();
-
-  if (typeof exports !== "undefined" && exports !== null) {
-    exports.Numberphiler = Numberphiler;
-  }
-
-  if (typeof window !== "undefined" && window !== null) {
-    this.N = function(anyValue) {
-      return new Numberphiler(anyValue);
-    };
   }
 
   /*
