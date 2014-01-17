@@ -58,23 +58,23 @@ class Numberphiler
     @repr = parse(@root)
 
   add: (something) ->
-    @repr.set(@repr.value + NumberphileNumber.toFixed(smartParseFloat(something)))
+    @repr.set(@repr.value + NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   divide: (something) ->
-    @repr.set(@repr.value / NumberphileNumber.toFixed(smartParseFloat(something)))
+    @repr.set(@repr.value / NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   mod: (something) ->
-    @repr.set(@repr.value % NumberphileNumber.toFixed(smartParseFloat(something)))
+    @repr.set(@repr.value % NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   multiply: (something) ->
-    @repr.set(@repr.value * NumberphileNumber.toFixed(smartParseFloat(something)))
+    @repr.set(@repr.value * NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   subtract: (something) ->
-    @repr.set(@repr.value - NumberphileNumber.toFixed(smartParseFloat(something)))
+    @repr.set(@repr.value - NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision))
     @
 
   # intPart: () ->
@@ -102,7 +102,7 @@ class Numberphiler
       r = concat
     
     if format == 'import'
-      r = smartToFixed(concat).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      r = NumberphileNumber.toFixed(concat, decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     
     return r
 
@@ -125,6 +125,9 @@ class NumberphileNumber
     @value = parseFloat(fv)
     @value
 
+  @toFixedNumber: (value, precision) ->
+    parseFloat(NumberphileNumber.toFixed(value, precision))
+
   @toFixed: (value, precision) ->
     precision = precision || 2
     neg = value < 0
@@ -133,7 +136,7 @@ class NumberphileNumber
     integral = String(((if neg then Math.ceil else Math.floor))(value / power))
     fraction = String(((if neg then -value else value)) % power)
     padding = new Array(Math.max(precision - fraction.length, 0) + 1).join("0")
-    if precision then parseFloat(integral + "." + padding + fraction) else parseFloat(integral)
+    if precision then integral + "." + padding + fraction else integral
 
 if exports?
   exports.Numberphiler = Numberphiler

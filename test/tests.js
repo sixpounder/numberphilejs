@@ -35,7 +35,11 @@ describe('Numberphiler', function() {
 
     it("f(6000) should return 6000 as value", function() {
         assert.equal(6000, f(6000).val());
-    });    
+    });
+
+    it("f(6000).val('import') should return '6.000,00'", function() {
+        assert.equal("6.000,00", f(6000).val('import'));
+    });
 
     it("f('6.000') should return 6 as value", function() {
         assert.equal(6, f("6.000").val());

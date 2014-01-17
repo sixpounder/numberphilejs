@@ -62,27 +62,27 @@
     }
 
     Numberphiler.prototype.add = function(something) {
-      this.repr.set(this.repr.value + NumberphileNumber.toFixed(smartParseFloat(something)));
+      this.repr.set(this.repr.value + NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
     Numberphiler.prototype.divide = function(something) {
-      this.repr.set(this.repr.value / NumberphileNumber.toFixed(smartParseFloat(something)));
+      this.repr.set(this.repr.value / NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
     Numberphiler.prototype.mod = function(something) {
-      this.repr.set(this.repr.value % NumberphileNumber.toFixed(smartParseFloat(something)));
+      this.repr.set(this.repr.value % NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
     Numberphiler.prototype.multiply = function(something) {
-      this.repr.set(this.repr.value * NumberphileNumber.toFixed(smartParseFloat(something)));
+      this.repr.set(this.repr.value * NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
     Numberphiler.prototype.subtract = function(something) {
-      this.repr.set(this.repr.value - NumberphileNumber.toFixed(smartParseFloat(something)));
+      this.repr.set(this.repr.value - NumberphileNumber.toFixedNumber(smartParseFloat(something), decimalPrecision));
       return this;
     };
 
@@ -110,7 +110,7 @@
         r = concat;
       }
       if (format === 'import') {
-        r = smartToFixed(concat).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        r = NumberphileNumber.toFixed(concat, decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
       return r;
     };
@@ -150,6 +150,10 @@
       return this.value;
     };
 
+    NumberphileNumber.toFixedNumber = function(value, precision) {
+      return parseFloat(NumberphileNumber.toFixed(value, precision));
+    };
+
     NumberphileNumber.toFixed = function(value, precision) {
       var fraction, integral, neg, padding, power;
       precision = precision || 2;
@@ -160,9 +164,9 @@
       fraction = String((neg ? -value : value) % power);
       padding = new Array(Math.max(precision - fraction.length, 0) + 1).join("0");
       if (precision) {
-        return parseFloat(integral + "." + padding + fraction);
+        return integral + "." + padding + fraction;
       } else {
-        return parseFloat(integral);
+        return integral;
       }
     };
 
