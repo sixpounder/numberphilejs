@@ -30,24 +30,28 @@
     smartParseFloat = function(v) {
       var commas, dots;
       if (typeof v === "string") {
-        dots = v.match(/\./g);
-        commas = v.match(/,/g);
-        if (commas != null) {
-          commas = commas.length;
+        if (v === "") {
+          v = 0;
         } else {
-          commas = 0;
-        }
-        if (dots != null) {
-          dots = dots.length;
-        } else {
-          dots = 0;
-        }
-        if (commas > 0 || (commas === 0 && dots > 1)) {
-          if (dots > 0) {
-            v = v.replace(/\./g, '');
+          dots = v.match(/\./g);
+          commas = v.match(/,/g);
+          if (commas != null) {
+            commas = commas.length;
+          } else {
+            commas = 0;
           }
+          if (dots != null) {
+            dots = dots.length;
+          } else {
+            dots = 0;
+          }
+          if (commas > 0 || (commas === 0 && dots > 1)) {
+            if (dots > 0) {
+              v = v.replace(/\./g, '');
+            }
+          }
+          v = v.replace(/,/g, '.');
         }
-        v = v.replace(/,/g, '.');
       }
       return parseFloat(v);
     };
@@ -260,7 +264,7 @@
     };
 
     Numberphile.prototype.formatImportToHumanReadableFormat = function() {
-      if (this.element.is(this._f_selectors.numberInput)) {
+      if (this.element.is(this._f_selectors.numberInput) && this.element.val() !== "") {
         return this.element.val(this.numberToS(this.element.val()));
       }
     };

@@ -86,7 +86,7 @@ class @Numberphile
   # @example
   #   $('input.import').numberphile('formatImportToHumanReadableFormat')
   formatImportToHumanReadableFormat: ->
-    if @element.is(@_f_selectors.numberInput)
+    if @element.is(@_f_selectors.numberInput) && @element.val() != ""
       @element.val(@numberToS(@element.val()))
 
   # See if an event keyCode is fit for an import value

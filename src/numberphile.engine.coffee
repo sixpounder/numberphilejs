@@ -29,24 +29,28 @@ class NumberphileReactor
   # @private
   smartParseFloat = (v)->
     if typeof v is "string"
-      dots = v.match(/\./g)
-      commas = v.match(/,/g)
 
-      if commas?
-        commas = commas.length
+      if v == ""
+        v = 0
       else
-        commas = 0
-      if dots?
-        dots = dots.length
-      else
-        dots = 0
+        dots = v.match(/\./g)
+        commas = v.match(/,/g)
 
-      if commas > 0 || (commas == 0 && dots > 1)
-        # Only if a comma is present treat dots as thousands seprarators
-        if dots > 0
-          # Treat as thousands marker, remove everything
-          v = v.replace(/\./g, '')
-      v = v.replace(/,/g, '.')
+        if commas?
+          commas = commas.length
+        else
+          commas = 0
+        if dots?
+          dots = dots.length
+        else
+          dots = 0
+
+        if commas > 0 || (commas == 0 && dots > 1)
+          # Only if a comma is present treat dots as thousands seprarators
+          if dots > 0
+            # Treat as thousands marker, remove everything
+            v = v.replace(/\./g, '')
+        v = v.replace(/,/g, '.')
 
     return parseFloat(v)
 
