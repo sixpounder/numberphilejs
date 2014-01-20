@@ -44,9 +44,9 @@ N(6000).val('import'); // -> 6.000,00
 N(6000.2).val('import'); // -> 6.000,20
 ```
 
-For node environment you will find Numberphiler class and N wrapper function in your exports
+For node environment you will find NumberphileReactor class and N wrapper function in your exports
 ```javascript
-var Numberphiler = require('numberphilejs').Numberphiler
+var NumberphileReactor = require('numberphilejs').NumberphileReactor
 var N = require('numberphilejs').N
 ```
 
@@ -75,3 +75,25 @@ $('input.import').numerphile({
 ```
 
 ## jQuery utilities
+
+### Counter
+A simple jQuery plugin to trigger increment step on various elements.
+
+The plugin is automatically activated on every element having role="counter-trigger" attribute, and using data attributes for configuration.
+
+To trigger it manually:
+
+```javascript
+$('button.step').numberphileCounter({
+	step: 1,
+	target: 'input.steppable'
+});
+```
+The target attribute is a selector identifying the DOM elements for which the value must be changed when the element you're calling the plugin on gets clicked
+
+###### Example
+```html
+	<input type="text" class="steppable" value="0" />
+
+	<button role="couter-trigger" data-target=".steppable" data-step="1"></button>
+```

@@ -14,6 +14,7 @@ class @NumberphileCounter
   # @param {Object} options plugin options
   # @option options {Boolean} autowire set to true if you want Numberphile to autowire a bunch of events on the element (such as blur, keydown...) - default true
   # @option options {Integer} step the step for increment and decrements operations
+  # @option option {String} target selector to identify target(s) to step
   constructor: (@element, options) ->
     @settings = $.extend @defaults, options
     @settings.step = parseInt(@settings.step, 10)

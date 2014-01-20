@@ -85,6 +85,10 @@ describe('NumberphileReactor', function() {
         assert.equal(12721.02, f(6000.01).multiply(2.12).add(1).val());
     });
 
+    it("f('6000,00').divide(2.3) should return 2608.7 as value", function() {
+        assert.equal(2608.7, f(6000.0).divide(2.3).val());
+    });
+
     it("f(6000).val('import') should return '6.000,00'", function() {
         assert.equal("6.000,00", f(6000).val('import'));
     });

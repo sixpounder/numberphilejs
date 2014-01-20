@@ -78,7 +78,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task(s).
-  var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint', 'simplemocha', 'compress'];
+  var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint', 'simplemocha'];
   var devTasks = ['clean', 'coffeelint', 'coffee', 'simplemocha'];
 
   grunt.registerTask('default', distTasks);
