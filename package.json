@@ -5,6 +5,21 @@
     "email": "blackeye84@gmail.com",
     "url": "https://github.com/sixpounder"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sixpounder/numberphilejs.git"
+  },
+  "readmeFilename": "Readme.md",
+  "description": "A simple library to handle numbers in javascript",
+  "keywords": [
+    "node",
+    "jquery",
+    "plugin",
+    "numbers",
+    "float",
+    "import",
+    "helper"
+  ],
   "version": "0.1.0",
   "engines": {
     "node": ">=0.8.15"
