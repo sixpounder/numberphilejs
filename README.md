@@ -1,6 +1,4 @@
 #A library to handle numbers & number formats in javascript
-___
-Still a work in progress, please be patient :)
 
 ## Dist ready
 Check the compiled javascripts in the dist directory if you do not want to compile coffeescript by yourself
