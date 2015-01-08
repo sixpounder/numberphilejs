@@ -2,3 +2,4 @@ node_modules/
 doc/
 dist/*.zip
 test/test.html
+.c9
