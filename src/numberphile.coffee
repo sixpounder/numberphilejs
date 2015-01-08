@@ -2,9 +2,9 @@
 jQuery plugin object to encapsulate methods and stuff
 It delegates math and conversions to {NumberphileReactor}
 @example Initialize plugin via javascript
-  $('input.import').numberphile();
+  $('input.currency').numberphile();
 @example Auto init the plugin by adding data attributes
-  <input data-numberphile="auto" data-format="import" value="123"/>
+  <input data-numberphile="auto" data-format="currency" value="123"/>
 @copyright Andrea Coronese
 ###
 class @Numberphile
@@ -16,7 +16,7 @@ class @Numberphile
   # @private
   _regexps =
     thousandsMatch: /\B(?=(\d{3})+(?!\d))/g
-    importTypableCharacter: /[0-9,\.]/g
+    currencyTypableCharacter: /[0-9,\.]/g
 
   # Default options
   # @private
@@ -24,16 +24,16 @@ class @Numberphile
     debug: false
     autowire: true
     autofocus: false
-    importMaxDecimalDigits: 2
-    importDecimalSeparator: ','
-    importThoudandsSeparator: '.'
+    currencyMaxDecimalDigits: 2
+    currencyDecimalSeparator: ','
+    currencyThoudandsSeparator: '.'
 
   # @param {Object} element wrapped jQuery.fn element to extend
   # @param {Object} options plugin options
   # @option options {Boolean} autowire set to true if you want Numberphile to autowire a bunch of events on the element (such as blur, keydown...) - default true
-  # @option options {Boolean} importmaxDecimalDigits maximum number of decimal digits for imports - default 2
-  # @option options {Boolean} importDecimalSeparator decimal separator for imports - default ','
-  # @option options {Boolean} importThoudandsSeparator thousands separator for imports - default '.'
+  # @option options {Boolean} currencymaxDecimalDigits maximum number of decimal digits for currencys - default 2
+  # @option options {Boolean} currencyDecimalSeparator decimal separator for currencys - default ','
+  # @option options {Boolean} currencyThoudandsSeparator thousands separator for currencys - default '.'
   constructor: (@element, options) ->
     @settings = $.extend @defaults, options
     @initialize()
@@ -52,15 +52,15 @@ class @Numberphile
 
     if @settings.autowire
 
-      if @element.attr('data-format') is 'import'
+      if @element.attr('data-format') is 'currency'
         @element.bind 'blur', () ->
-          $(this).numberphile('formatImportToHumanReadableFormat')
+          $(this).numberphile('formatcurrencyToHumanReadableFormat')
         .bind 'focus', () ->
-          $(this).numberphile('editModeForImport')
+          $(this).numberphile('editModeForcurrency')
         .keydown (event) ->
-          if !eventKeyCodeFitsImport(event)
+          if !eventKeyCodeFitscurrency(event)
             event.preventDefault()
-        .val( N(@element.val()).val('import') )
+        .val( N(@element.val()).val('currency') )
 
     if @settings.autofocus
       @element.bind 'focus', () ->
@@ -68,30 +68,30 @@ class @Numberphile
 
   # Call this to format matched element value in a simple numeric format
   # @example
-  #   $('input.import').numberphile('humanReadableImportToNumber')
-  humanReadableImportToNumber: ->
+  #   $('input.currency').numberphile('humanReadablecurrencyToNumber')
+  humanReadablecurrencyToNumber: ->
     if @element.is(@_f_selectors.numberInput)
       @element.val(@SToNumber(@element.val()))
 
   # Call this to format matched element value in a way that can be edited by
   # a user. If autowire is true this is automatically attached to element focusin event
   # @example
-  #   $('input.import').numberphile('editModeForImport')
-  editModeForImport: ->
+  #   $('input.currency').numberphile('editModeForcurrency')
+  editModeForcurrency: ->
     if @element.is(@_f_selectors.numberInput)
-      @element.val(@SToNumber(@element.val()).toString().replace('.', @settings.importDecimalSeparator))
+      @element.val(@SToNumber(@element.val()).toString().replace('.', @settings.currencyDecimalSeparator))
 
-  # Call this to format matched element value in a human readable import format.
+  # Call this to format matched element value in a human readable currency format.
   # If autowire is true this is automatically attached to element blur event
   # @example
-  #   $('input.import').numberphile('formatImportToHumanReadableFormat')
-  formatImportToHumanReadableFormat: ->
+  #   $('input.currency').numberphile('formatcurrencyToHumanReadableFormat')
+  formatcurrencyToHumanReadableFormat: ->
     if @element.is(@_f_selectors.numberInput) && @element.val() != ""
       @element.val(@numberToS(@element.val()))
 
-  # See if an event keyCode is fit for an import value
+  # See if an event keyCode is fit for an currency value
   # @private
-  eventKeyCodeFitsImport = (event)->
+  eventKeyCodeFitscurrency = (event)->
     if (
       event.keyCode == 188 ||
       event.keyCode == 46 ||
@@ -133,10 +133,10 @@ class @Numberphile
   SToNumber: (value)->
     N(value).val()
 
-  # Converts a number to a formatted import
+  # Converts a number to a formatted currency
   # @private
   numberToS: (number)->
-    N(number).val('import')
+    N(number).val('currency')
 
 # Only extend jQuery if jQuery is present
 if $? && window?
@@ -167,8 +167,8 @@ if window? && $?
           $this.numberphile
             autowire: if $this.attr('data-autowire') == "true" then true else false
             autofocus: if $this.attr('data-autofocus') == "true" then true else false
-            importMaxDecimalDigits: $this.attr('data-importMaxDecimalDigits')
-            importDecimalSeparator: $this.attr('data-importDecimalSeparator')
-            importThoudandsSeparator: $this.attr('data-importThoudandsSeparator')
+            currencyMaxDecimalDigits: $this.attr('data-currencyMaxDecimalDigits')
+            currencyDecimalSeparator: $this.attr('data-currencyDecimalSeparator')
+            currencyThoudandsSeparator: $this.attr('data-currencyThoudandsSeparator')
 
   ) window.jQuery

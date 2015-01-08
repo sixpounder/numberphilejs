@@ -113,7 +113,7 @@
       if (format === 'float') {
         r = concat;
       }
-      if (format === 'import') {
+      if (format === 'currency') {
         r = NumberphileNumber.toFixed(concat, decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
       }
       return r;
@@ -189,15 +189,15 @@
   jQuery plugin object to encapsulate methods and stuff
   It delegates math and conversions to {NumberphileReactor}
   @example Initialize plugin via javascript
-    $('input.import').numberphile();
+    $('input.currency').numberphile();
   @example Auto init the plugin by adding data attributes
-    <input data-numberphile="auto" data-format="import" value="123"/>
+    <input data-numberphile="auto" data-format="currency" value="123"/>
   @copyright Andrea Coronese
   */
 
 
   this.Numberphile = (function() {
-    var charFromEvent, eventKeyCodeFitsImport, _regexps;
+    var charFromEvent, eventKeyCodeFitscurrency, _regexps;
 
     Numberphile.prototype._f_selectors = {
       numberInput: 'input[type=text], input[type=number]'
@@ -205,16 +205,16 @@
 
     _regexps = {
       thousandsMatch: /\B(?=(\d{3})+(?!\d))/g,
-      importTypableCharacter: /[0-9,\.]/g
+      currencyTypableCharacter: /[0-9,\.]/g
     };
 
     Numberphile.prototype.defaults = {
       debug: false,
       autowire: true,
       autofocus: false,
-      importMaxDecimalDigits: 2,
-      importDecimalSeparator: ',',
-      importThoudandsSeparator: '.'
+      currencyMaxDecimalDigits: 2,
+      currencyDecimalSeparator: ',',
+      currencyThoudandsSeparator: '.'
     };
 
     function Numberphile(element, options) {
@@ -232,16 +232,16 @@
         this.settings.autowire = true;
       }
       if (this.settings.autowire) {
-        if (this.element.attr('data-format') === 'import') {
+        if (this.element.attr('data-format') === 'currency') {
           this.element.bind('blur', function() {
-            return $(this).numberphile('formatImportToHumanReadableFormat');
+            return $(this).numberphile('formatcurrencyToHumanReadableFormat');
           }).bind('focus', function() {
-            return $(this).numberphile('editModeForImport');
+            return $(this).numberphile('editModeForcurrency');
           }).keydown(function(event) {
-            if (!eventKeyCodeFitsImport(event)) {
+            if (!eventKeyCodeFitscurrency(event)) {
               return event.preventDefault();
             }
-          }).val(N(this.element.val()).val('import'));
+          }).val(N(this.element.val()).val('currency'));
         }
       }
       if (this.settings.autofocus) {
@@ -251,25 +251,25 @@
       }
     };
 
-    Numberphile.prototype.humanReadableImportToNumber = function() {
+    Numberphile.prototype.humanReadablecurrencyToNumber = function() {
       if (this.element.is(this._f_selectors.numberInput)) {
         return this.element.val(this.SToNumber(this.element.val()));
       }
     };
 
-    Numberphile.prototype.editModeForImport = function() {
+    Numberphile.prototype.editModeForcurrency = function() {
       if (this.element.is(this._f_selectors.numberInput)) {
-        return this.element.val(this.SToNumber(this.element.val()).toString().replace('.', this.settings.importDecimalSeparator));
+        return this.element.val(this.SToNumber(this.element.val()).toString().replace('.', this.settings.currencyDecimalSeparator));
       }
     };
 
-    Numberphile.prototype.formatImportToHumanReadableFormat = function() {
+    Numberphile.prototype.formatcurrencyToHumanReadableFormat = function() {
       if (this.element.is(this._f_selectors.numberInput) && this.element.val() !== "") {
         return this.element.val(this.numberToS(this.element.val()));
       }
     };
 
-    eventKeyCodeFitsImport = function(event) {
+    eventKeyCodeFitscurrency = function(event) {
       if (event.keyCode === 188 || event.keyCode === 46 || event.keyCode === 8 || event.keyCode === 9 || event.keyCode === 27 || event.keyCode === 13 || (event.keyCode === 65 && event.ctrlKey === true) || (event.keyCode >= 35 && event.keyCode <= 39)) {
         return true;
       } else {
@@ -302,7 +302,7 @@
     };
 
     Numberphile.prototype.numberToS = function(number) {
-      return N(number).val('import');
+      return N(number).val('currency');
     };
 
     return Numberphile;
@@ -347,9 +347,9 @@
             return $this.numberphile({
               autowire: $this.attr('data-autowire') === "true" ? true : false,
               autofocus: $this.attr('data-autofocus') === "true" ? true : false,
-              importMaxDecimalDigits: $this.attr('data-importMaxDecimalDigits'),
-              importDecimalSeparator: $this.attr('data-importDecimalSeparator'),
-              importThoudandsSeparator: $this.attr('data-importThoudandsSeparator')
+              currencyMaxDecimalDigits: $this.attr('data-currencyMaxDecimalDigits'),
+              currencyDecimalSeparator: $this.attr('data-currencyDecimalSeparator'),
+              currencyThoudandsSeparator: $this.attr('data-currencyThoudandsSeparator')
             });
           }
         });

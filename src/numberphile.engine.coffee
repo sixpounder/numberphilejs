@@ -115,7 +115,7 @@ class NumberphileReactor
     if format == 'float'
       r = concat
     
-    if format == 'import'
+    if format == 'currency'
       r = NumberphileNumber.toFixed(concat, decimalPrecision).replace(/\./g, ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     
     return r

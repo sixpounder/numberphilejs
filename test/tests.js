@@ -89,11 +89,11 @@ describe('NumberphileReactor', function() {
         assert.equal(2608.7, f(6000.0).divide(2.3).val());
     });
 
-    it("f(6000).val('import') should return '6.000,00'", function() {
-        assert.equal("6.000,00", f(6000).val('import'));
+    it("f(6000).val('currency') should return '6.000,00'", function() {
+        assert.equal("6.000,00", f(6000).val('currency'));
     });
 
-    it("f(6000).add('4.000,30').val('import') should return '10.000,30'", function() {
-        assert.equal("10.000,30", f(6000).add('4.000,30').val('import'));
+    it("f(6000).add('4.000,30').val('currency') should return '10.000,30'", function() {
+        assert.equal("10.000,30", f(6000).add('4.000,30').val('currency'));
     });
 });

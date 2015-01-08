@@ -38,8 +38,8 @@ N("6.000").divide('2').val() // -> 3000
 
 ###### Formatting
 ```javascript
-N(6000).val('import'); // -> 6.000,00
-N(6000.2).val('import'); // -> 6.000,20
+N(6000).val('currency'); // -> 6.000,00
+N(6000.2).val('currency'); // -> 6.000,20
 ```
 
 For node environment you will find NumberphileReactor class and N wrapper function in your exports
@@ -52,23 +52,23 @@ var N = require('numberphilejs').N
 To easily integrate the library in your DOM we ship an integrated jQuery plugin. The plugin will be triggered for every item having data-numberphile="auto" attribute.
 
 ```html
-<input data-numberphile="auto" data-format="import" value="123"/>
+<input data-numberphile="auto" data-format="currency" value="123"/>
 ```
 
 This approach will use data attributes to configure the plugin
 
 ```html
-<input data-numberphile="auto" data-importMaxDecimalDigits="2" data-format="import" value="123"/>
+<input data-numberphile="auto" data-currencyMaxDecimalDigits="2" data-format="currency" value="123"/>
 ```
 
 You can still call it yourself
 
 ```javascript
-$('input.import').numerphile({
+$('input.currency').numerphile({
     autowire: true, // Automatic binding for DOM events
-    importMaxDecimalDigits: 2,
-    importDecimalSeparator: ','
-    importThoudandsSeparator: '.'
+    currencyMaxDecimalDigits: 2,
+    currencyDecimalSeparator: ',',
+    currencyThoudandsSeparator: '.'
 });
 ```
 
