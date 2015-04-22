@@ -80,9 +80,11 @@ module.exports = function(grunt) {
   // Default task(s).
   var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint', 'simplemocha'];
   var devTasks = ['clean', 'coffeelint', 'coffee', 'simplemocha'];
+  var testTasks = ['clean', 'coffeelint', 'coffee', 'simplemocha'];
 
   grunt.registerTask('default', distTasks);
   grunt.registerTask('dist', distTasks);
   grunt.registerTask('dev', devTasks);
+  grunt.registerTask('test', testTasks);
 
 };

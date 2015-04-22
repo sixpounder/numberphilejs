@@ -1,5 +1,4 @@
 // Created by Andrea Coronese
-
 var assert = require('assert');
 var N = require('../dist/numberphile.js').NumberphileReactor;
 var WrapperFunction = require('../dist/numberphile.js').N

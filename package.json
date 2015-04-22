@@ -9,6 +9,9 @@
     "type": "git",
     "url": "https://github.com/sixpounder/numberphilejs.git"
   },
+  "scripts": {
+    "test": "grunt test"
+  },
   "readmeFilename": "Readme.md",
   "description": "A simple library to handle numbers in javascript",
   "keywords": [
