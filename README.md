@@ -1,7 +1,14 @@
-#A library to handle numbers & number formats in javascript
+# numberphilejs
+A library to handle numbers & number formats in javascript, either on Node or in the browser
 
 ## Dist ready
 Check the compiled javascripts in the dist directory if you do not want to compile coffeescript by yourself
+
+## Install on node
+
+```bash
+npm install numberphilejs
+```
 
 ## Build from sources
 You will need a nodejs runtime, grunt-cli for code generation and codo if you want to generate HTML docs
