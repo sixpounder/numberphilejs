@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Numberphilejs by sixpounder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Numberphilejs</h1>
+      <h2 class="project-tagline">A library to handle numbers &amp; number formats in javascript</h2>
+      <a href="https://github.com/sixpounder/numberphilejs" class="btn">View on GitHub</a>
+      <a href="https://github.com/sixpounder/numberphilejs/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sixpounder/numberphilejs/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="a-library-to-handle-numbers--number-formats-in-javascript" class="anchor" href="#a-library-to-handle-numbers--number-formats-in-javascript" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A library to handle numbers &amp; number formats in javascript</h1>
+
+<h2>
+<a id="dist-ready" class="anchor" href="#dist-ready" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dist ready</h2>
+
+<p>Check the compiled javascripts in the dist directory if you do not want to compile coffeescript by yourself</p>
+
+<h2>
+<a id="build-from-sources" class="anchor" href="#build-from-sources" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build from sources</h2>
+
+<p>You will need a nodejs runtime, grunt-cli for code generation and codo if you want to generate HTML docs</p>
+
+<div class="highlight highlight-source-shell"><pre>npm install -g grunt-cli
+npm install -g codo</pre></div>
+
+<p>Build project into dist/ directory</p>
+
+<div class="highlight highlight-source-shell"><pre>git clone git@github.com:sixpounder/numberphilejs.git
+npm install <span class="pl-k">&amp;&amp;</span> grunt</pre></div>
+
+<hr>
+
+<h2>
+<a id="numbers-manipulation" class="anchor" href="#numbers-manipulation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Numbers manipulation</h2>
+
+<p>Following examples are for browser-side use.</p>
+
+<h6>
+<a id="number-parsing" class="anchor" href="#number-parsing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Number parsing</h6>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">N</span>(<span class="pl-c1">6000</span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 6000</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6000,<span class="pl-pds">"</span></span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 6000</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6000,45<span class="pl-pds">"</span></span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 6000.45</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6.000,45<span class="pl-pds">"</span></span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 6000.45</span></pre></div>
+
+<h6>
+<a id="chainable-operations" class="anchor" href="#chainable-operations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Chainable operations</h6>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">N</span>(<span class="pl-c1">6000</span>).<span class="pl-c1">add</span>(<span class="pl-c1">2000</span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 8000</span>
+<span class="pl-en">N</span>(<span class="pl-c1">6000</span>).<span class="pl-c1">add</span>(<span class="pl-c1">2000</span>).<span class="pl-c1">add</span>(<span class="pl-s"><span class="pl-pds">"</span>1,5<span class="pl-pds">"</span></span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 8001.5</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6000,<span class="pl-pds">"</span></span>).<span class="pl-en">subtract</span>(<span class="pl-c1">2000</span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 4000</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6000,45<span class="pl-pds">"</span></span>).<span class="pl-en">multiply</span>(<span class="pl-c1">2</span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 12000.9</span>
+<span class="pl-en">N</span>(<span class="pl-s"><span class="pl-pds">"</span>6.000<span class="pl-pds">"</span></span>).<span class="pl-en">divide</span>(<span class="pl-s"><span class="pl-pds">'</span>2<span class="pl-pds">'</span></span>).<span class="pl-en">val</span>() <span class="pl-c">// -&gt; 3000</span></pre></div>
+
+<h6>
+<a id="formatting" class="anchor" href="#formatting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Formatting</h6>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">N</span>(<span class="pl-c1">6000</span>).<span class="pl-en">val</span>(<span class="pl-s"><span class="pl-pds">'</span>currency<span class="pl-pds">'</span></span>); <span class="pl-c">// -&gt; 6.000,00</span>
+<span class="pl-en">N</span>(<span class="pl-c1">6000.2</span>).<span class="pl-en">val</span>(<span class="pl-s"><span class="pl-pds">'</span>currency<span class="pl-pds">'</span></span>); <span class="pl-c">// -&gt; 6.000,20</span></pre></div>
+
+<p>For node environment you will find NumberphileReactor class and N wrapper function in your exports</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> NumberphileReactor <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>numberphilejs<span class="pl-pds">'</span></span>).<span class="pl-smi">NumberphileReactor</span>
+<span class="pl-k">var</span> N <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>numberphilejs<span class="pl-pds">'</span></span>).<span class="pl-c1">N</span></pre></div>
+
+<h2>
+<a id="jquery-plugin" class="anchor" href="#jquery-plugin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jQuery plugin</h2>
+
+<p>To easily integrate the library in your DOM we ship an integrated jQuery plugin. The plugin will be triggered for every item having data-numberphile="auto" attribute.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">input</span> <span class="pl-e">data-numberphile</span>=<span class="pl-s"><span class="pl-pds">"</span>auto<span class="pl-pds">"</span></span> <span class="pl-e">data-format</span>=<span class="pl-s"><span class="pl-pds">"</span>currency<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>/&gt;</pre></div>
+
+<p>This approach will use data attributes to configure the plugin</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">input</span> <span class="pl-e">data-numberphile</span>=<span class="pl-s"><span class="pl-pds">"</span>auto<span class="pl-pds">"</span></span> <span class="pl-e">data-currencyMaxDecimalDigits</span>=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span> <span class="pl-e">data-format</span>=<span class="pl-s"><span class="pl-pds">"</span>currency<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>123<span class="pl-pds">"</span></span>/&gt;</pre></div>
+
+<p>You can still call it yourself</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>input.currency<span class="pl-pds">'</span></span>).<span class="pl-en">numerphile</span>({
+    autowire<span class="pl-k">:</span> <span class="pl-c1">true</span>, <span class="pl-c">// Automatic binding for DOM events</span>
+    currencyMaxDecimalDigits<span class="pl-k">:</span> <span class="pl-c1">2</span>,
+    currencyDecimalSeparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>,<span class="pl-pds">'</span></span>,
+    currencyThoudandsSeparator<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<h2>
+<a id="jquery-utilities" class="anchor" href="#jquery-utilities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>jQuery utilities</h2>
+
+<h3>
+<a id="counter" class="anchor" href="#counter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Counter</h3>
+
+<p>A simple jQuery plugin to trigger increment step on various elements.</p>
+
+<p>The plugin is automatically activated on every element having role="counter-trigger" attribute, and using data attributes for configuration.</p>
+
+<p>To trigger it manually:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">$</span>(<span class="pl-s"><span class="pl-pds">'</span>button.step<span class="pl-pds">'</span></span>).<span class="pl-en">numberphileCounter</span>({
+    step<span class="pl-k">:</span> <span class="pl-c1">1</span>,
+    target<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>input.steppable<span class="pl-pds">'</span></span>
+});</pre></div>
+
+<p>The target attribute is a selector identifying the DOM elements for which the value must be changed when the element you're calling the plugin on gets clicked</p>
+
+<h6>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h6>
+
+<div class="highlight highlight-text-html-basic"><pre>    &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>steppable<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span> /&gt;
+
+    &lt;<span class="pl-ent">button</span> <span class="pl-e">role</span>=<span class="pl-s"><span class="pl-pds">"</span>couter-trigger<span class="pl-pds">"</span></span> <span class="pl-e">data-target</span>=<span class="pl-s"><span class="pl-pds">"</span>.steppable<span class="pl-pds">"</span></span> <span class="pl-e">data-step</span>=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">button</span>&gt;</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sixpounder/numberphilejs">Numberphilejs</a> is maintained by <a href="https://github.com/sixpounder">sixpounder</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
