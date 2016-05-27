@@ -47,9 +47,6 @@ module.exports = function(grunt) {
       js: {
         files: {
           'dist/numberphile.min.js': [numberphilejsTargetFile]
-        },
-        options: {
-          report: 'gzip'
         }
       }
     },
@@ -78,8 +75,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task(s).
-  var distTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint', 'simplemocha'];
-  var buildTasks = ['clean', 'coffeelint', 'coffee', 'uglify', 'jshint'];
+  var distTasks = ['clean', 'coffeelint', 'coffee', 'jshint', 'uglify', 'simplemocha'];
+  var buildTasks = ['clean', 'coffeelint', 'coffee', 'jshint', 'uglify'];
   var devTasks = ['clean', 'coffeelint', 'coffee', 'simplemocha'];
   var testTasks = ['simplemocha'];
 
